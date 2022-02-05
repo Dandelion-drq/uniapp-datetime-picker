@@ -1,5 +1,5 @@
 import DateTimePicker from '../dateTimePicker/index.vue';
-const dayjs = require('dayjs');
+import DateUtil from '../dateTimePicker/dateUtil';
 
 export default {
   components: {
@@ -62,13 +62,13 @@ export default {
       this.showEndDatePicker = false;
       if (!this.startDate) {
         if (this.mode == 2) {
-          this.startDate = dayjs().format('YYYY-MM');
+          this.startDate = DateUtil.formatDate(new Date(), 'YYYY-MM');
         } else if (this.mode == 3) {
-          this.startDate = dayjs().format('YYYY');
+          this.startDate = DateUtil.formatDate(new Date(), 'YYYY');
         } else if (this.mode == 4) {
-          this.startDate = dayjs().format('YYYY-MM-DD HH:mm:ss');
+          this.startDate = DateUtil.formatDate(new Date(), 'YYYY-MM-DD HH:mm:ss');
         } else {
-          this.startDate = dayjs().format('YYYY-MM-DD');
+          this.startDate = DateUtil.formatDate(new Date(), 'YYYY-MM-DD');
         }
       }
       this.activeDate = 'startDate';
@@ -96,7 +96,7 @@ export default {
       } else if (!this.endDate) {
         this.showToastInfo('请选择结束时间');
         return false;
-      } else if (dayjs(this.startDate).isAfter(dayjs(this.endDate))) {
+      } else if (DateUtil.isAfter(this.startDate, this.endDate)) {
         this.showToastInfo('结束时间不能小于开始时间');
         return false;
       }

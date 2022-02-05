@@ -6,7 +6,7 @@
 
 <script>
 import PickerView from '../pickerView/index.vue';
-const dayjs = require('dayjs');
+import DateUtil from '../dateTimePicker/dateUtil';
 
 export default {
   components: {
@@ -36,58 +36,62 @@ export default {
   },
   data() {
     return {
-      selectYear: dayjs().year(),
-      selectMonth: dayjs().month() + 1, // 选中的月份，1~12
-      selectDay: dayjs().date(),
-      selectHour: dayjs().hour(),
-      selectMinute: dayjs().minute(),
-      selectSecond: dayjs().second()
+      selectYear: new Date().getFullYear(),
+      selectMonth: new Date().getMonth() + 1, // 选中的月份，1~12
+      selectDay: new Date().getDate(),
+      selectHour: new Date().getHours(),
+      selectMinute: new Date().getMinutes(),
+      selectSecond: new Date().getSeconds()
     };
   },
   watch: {
     defaultDate(val) {
       // console.log('defaultDate', val);
       if (val) {
-        let date = dayjs(val);
+        let date = new Date(val);
         if (this.mode == 2) {
-          this.selectYear = date.year();
-          this.selectMonth = date.month() + 1;
+          this.selectYear = date.getFullYear();
+          this.selectMonth = date.getMonth() + 1;
         } else if (this.mode == 3) {
-          this.selectYear = date.year();
+          this.selectYear = date.getFullYear();
         } else if (this.mode == 4) {
-          this.selectYear = date.year();
-          this.selectMonth = date.month() + 1;
-          this.selectDay = date.date();
-          this.selectHour = date.hour();
-          this.selectMinute = date.minute();
-          this.selectSecond = date.second();
+          this.selectYear = date.getFullYear();
+          this.selectMonth = date.getMonth() + 1;
+          this.selectDay = date.getDate();
+          this.selectHour = date.getHours();
+          this.selectMinute = date.getMinutes();
+          this.selectSecond = date.getSeconds();
         } else {
-          this.selectYear = date.year();
-          this.selectMonth = date.month() + 1;
-          this.selectDay = date.date();
+          this.selectYear = date.getFullYear();
+          this.selectMonth = date.getMonth() + 1;
+          this.selectDay = date.getDate();
         }
       }
     }
   },
   computed: {
-    minDateDayjsObj() {
+    minDateObj() {
       let minDate = this.minDate;
       if (!minDate) {
-        minDate = dayjs().subtract(10, 'year').format('YYYY-MM-DD HH:mm:ss');
+        // 没有传最小日期，默认十年前
+        minDate = new Date();
+        minDate.setFullYear(minDate.getFullYear() - 10);
       }
-      return dayjs(minDate);
+      return new Date(minDate);
     },
-    maxDateDayjsObj() {
+    maxDateObj() {
       let maxDate = this.maxDate;
       if (!maxDate) {
-        maxDate = dayjs().add(10, 'year').format('YYYY-MM-DD HH:mm:ss');
+        // 没有传最大日期，默认十年后
+        maxDate = new Date();
+        maxDate.setFullYear(maxDate.getFullYear() + 10);
       }
-      return dayjs(maxDate);
+      return new Date(maxDate);
     },
     years() {
       let years = [];
-      let minYear = this.minDateDayjsObj.year();
-      let maxYear = this.maxDateDayjsObj.year();
+      let minYear = this.minDateObj.getFullYear();
+      let maxYear = this.maxDateObj.getFullYear();
       for (let i = minYear; i <= maxYear; i++) {
         years.push(i);
       }
@@ -100,12 +104,12 @@ export default {
       let maxMonth = 12;
 
       // 如果选中的年份刚好是最小可选日期的年份，那月份就要从最小日期的月份开始
-      if (this.selectYear == this.minDateDayjsObj.year()) {
-        minMonth = this.minDateDayjsObj.month() + 1;
+      if (this.selectYear == this.minDateObj.getFullYear()) {
+        minMonth = this.minDateObj.getMonth() + 1;
       }
       // 如果选中的年份刚好是最大可选日期的年份，那月份就要在最大日期的月份结束
-      if (this.selectYear == this.maxDateDayjsObj.year()) {
-        maxMonth = this.maxDateDayjsObj.month() + 1;
+      if (this.selectYear == this.maxDateObj.getFullYear()) {
+        maxMonth = this.maxDateObj.getMonth() + 1;
       }
 
       for (let i = minMonth; i <= maxMonth; i++) {
@@ -125,11 +129,11 @@ export default {
       let minDay = 1;
       let maxDay = monthDaysConfig[this.selectMonth - 1];
 
-      if (this.selectYear == this.minDateDayjsObj.year() && this.selectMonth == this.minDateDayjsObj.month() + 1) {
-        minDay = this.minDateDayjsObj.date();
+      if (this.selectYear == this.minDateObj.getFullYear() && this.selectMonth == this.minDateObj.getMonth() + 1) {
+        minDay = this.minDateObj.getDate();
       }
-      if (this.selectYear == this.maxDateDayjsObj.year() && this.selectMonth == this.maxDateDayjsObj.month() + 1) {
-        maxDay = this.maxDateDayjsObj.date();
+      if (this.selectYear == this.maxDateObj.getFullYear() && this.selectMonth == this.maxDateObj.getMonth() + 1) {
+        maxDay = this.maxDateObj.getDate();
       }
 
       let days = [];
@@ -145,18 +149,18 @@ export default {
       let maxHour = 23;
 
       if (
-        this.selectYear == this.minDateDayjsObj.year() &&
-        this.selectMonth == this.minDateDayjsObj.month() + 1 &&
-        this.selectDay == this.minDateDayjsObj.date()
+        this.selectYear == this.minDateObj.getFullYear() &&
+        this.selectMonth == this.minDateObj.getMonth() + 1 &&
+        this.selectDay == this.minDateObj.getDate()
       ) {
-        minHour = this.minDateDayjsObj.hour();
+        minHour = this.minDateObj.getHours();
       }
       if (
-        this.selectYear == this.maxDateDayjsObj.year() &&
-        this.selectMonth == this.maxDateDayjsObj.month() + 1 &&
-        this.selectDay == this.maxDateDayjsObj.date()
+        this.selectYear == this.maxDateObj.getFullYear() &&
+        this.selectMonth == this.maxDateObj.getMonth() + 1 &&
+        this.selectDay == this.maxDateObj.getDate()
       ) {
-        maxHour = this.maxDateDayjsObj.hour();
+        maxHour = this.maxDateObj.getHours();
       }
 
       for (let i = minHour; i <= maxHour; i++) {
@@ -171,20 +175,20 @@ export default {
       let maxMin = 59;
 
       if (
-        this.selectYear == this.minDateDayjsObj.year() &&
-        this.selectMonth == this.minDateDayjsObj.month() + 1 &&
-        this.selectDay == this.minDateDayjsObj.date() &&
-        this.selectHour == this.minDateDayjsObj.hour()
+        this.selectYear == this.minDateObj.getFullYear() &&
+        this.selectMonth == this.minDateObj.getMonth() + 1 &&
+        this.selectDay == this.minDateObj.getDate() &&
+        this.selectHour == this.minDateObj.getHours()
       ) {
-        minMin = this.minDateDayjsObj.minute();
+        minMin = this.minDateObj.getMinutes();
       }
       if (
-        this.selectYear == this.maxDateDayjsObj.year() &&
-        this.selectMonth == this.maxDateDayjsObj.month() + 1 &&
-        this.selectDay == this.maxDateDayjsObj.date() &&
-        this.selectHour == this.maxDateDayjsObj.hour()
+        this.selectYear == this.maxDateObj.getFullYear() &&
+        this.selectMonth == this.maxDateObj.getMonth() + 1 &&
+        this.selectDay == this.maxDateObj.getDate() &&
+        this.selectHour == this.maxDateObj.getHours()
       ) {
-        maxMin = this.maxDateDayjsObj.minute();
+        maxMin = this.maxDateObj.getMinutes();
       }
 
       for (let i = minMin; i <= maxMin; i++) {
@@ -199,22 +203,22 @@ export default {
       let maxSecond = 59;
 
       if (
-        this.selectYear == this.minDateDayjsObj.year() &&
-        this.selectMonth == this.minDateDayjsObj.month() + 1 &&
-        this.selectDay == this.minDateDayjsObj.date() &&
-        this.selectHour == this.minDateDayjsObj.hour() &&
-        this.selectMinute == this.minDateDayjsObj.minute()
+        this.selectYear == this.minDateObj.getFullYear() &&
+        this.selectMonth == this.minDateObj.getMonth() + 1 &&
+        this.selectDay == this.minDateObj.getDate() &&
+        this.selectHour == this.minDateObj.getHours() &&
+        this.selectMinute == this.minDateObj.getMinutes()
       ) {
-        minSecond = this.minDateDayjsObj.second();
+        minSecond = this.minDateObj.getSeconds();
       }
       if (
-        this.selectYear == this.maxDateDayjsObj.year() &&
-        this.selectMonth == this.maxDateDayjsObj.month() + 1 &&
-        this.selectDay == this.maxDateDayjsObj.date() &&
-        this.selectHour == this.maxDateDayjsObj.hour() &&
-        this.selectMinute == this.maxDateDayjsObj.minute()
+        this.selectYear == this.maxDateObj.getFullYear() &&
+        this.selectMonth == this.maxDateObj.getMonth() + 1 &&
+        this.selectDay == this.maxDateObj.getDate() &&
+        this.selectHour == this.maxDateObj.getHours() &&
+        this.selectMinute == this.maxDateObj.getMinutes()
       ) {
-        maxSecond = this.maxDateDayjsObj.second();
+        maxSecond = this.maxDateObj.getSeconds();
       }
 
       for (let i = minSecond; i <= maxSecond; i++) {
@@ -307,9 +311,10 @@ export default {
 
       this.$emit(
         'onChange',
-        dayjs(
-          `${this.selectYear}-${this.selectMonth}-${this.selectDay} ${this.selectHour}:${this.selectMinute}:${this.selectSecond}`
-        ).format(formatTmpl)
+        DateUtil.formatDate(
+          new Date(`${this.selectYear}-${this.selectMonth}-${this.selectDay} ${this.selectHour}:${this.selectMinute}:${this.selectSecond}`),
+          formatTmpl
+        )
       );
     }
   }
