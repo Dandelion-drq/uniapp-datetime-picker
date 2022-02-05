@@ -1,4 +1,4 @@
-import DateSelector from "@/components/dateSelector/index.vue";
+import DateSelector from '@/components/dateSelector/index.vue';
 
 // 日期范围类型
 const DATE_TYPES = [
@@ -17,25 +17,25 @@ const DATE_TYPES = [
   {
     label: '年月日时分秒',
     value: 4
-  },
-]
+  }
+];
 
 export default {
   components: {
-    DateSelector,
+    DateSelector
   },
   data() {
     return {
       dateTypes: DATE_TYPES, // 日期范围类型
-      selectDateType: 1, // 选中的日期类型
-    }
+      selectDateType: 1 // 选中的日期类型
+    };
   },
   methods: {
     onTapDateType(type) {
       this.selectDateType = type;
     },
     onDateSelectorChange({ startDate, endDate }) {
-      console.log('onDateSelectorChange', startDate, endDate)
-    },
-  },
+      console.log('onDateSelectorChange', startDate, endDate);
+    }
+  }
 };

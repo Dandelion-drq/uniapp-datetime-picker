@@ -1,0 +1,10 @@
+# 这个目录下的文件，不会被格式化
+/dist/**
+/node_modules/**
+
+*.sjs
+*.json
+*.key
+*.min.js
+*.min.css
+*.min.scss

@@ -15,10 +15,7 @@
         </view>
 
         <view class="date-seletor-wrapper">
-          <DateSelector
-            :mode="selectDateType"
-            @onChange="onDateSelectorChange"
-          />
+          <DateSelector :mode="selectDateType" @onChange="onDateSelectorChange" />
         </view>
       </view>
     </view>
