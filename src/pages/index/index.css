@@ -1,0 +1,37 @@
+.content {
+    margin-top: 24px;
+}
+
+.filter-group-title {
+    margin: 0 16px 12px;
+    color: #333;
+    font-size: 12px;
+}
+
+.filter-group-options {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding: 0 16px;
+}
+
+.filter-group-option-btn {
+    min-width: 56px;
+    text-align: center;
+    line-height: 28px;
+    height: 28px;
+    background: #f9f9f9;
+    color: rgba(6, 7, 46, 0.5);
+    border-radius: 2px;
+    font-size: 12px;
+    padding: 0 8px;
+}
+
+.filter-group-option-btn.selected {
+    background: #6a7bff;
+    color: #fff;
+}
+
+.date-seletor-wrapper {
+    padding: 0 16px;
+}

@@ -1,29 +1,28 @@
 .date-selector {
-  width: 100%;
-  font-size: 12px;
-  color: #333;
+    width: 100%;
+    font-size: 12px;
+    color: #333;
 }
 
 .select-date-wrapper {
-  margin: 0 16px 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .select-date {
-  /* color: #333; */
-  padding: 10px;
-  width: 296rpx;
-  border-radius: 2px;
-  border: 1px solid rgba(6,7,46,0.05);
-  font-size: 12px;
+    padding: 10px;
+    flex: 1;
+    border-radius: 2px;
+    border: 1px solid rgba(6, 7, 46, 0.05);
+    font-size: 12px;
 }
 
 .select-date.active {
-  border-color: #6a7bff;
+    border-color: #6a7bff;
 }
 
 .select-date-placeholder {
-  color: rgba(6,7,46,0.3);
+    color: rgba(6, 7, 46, 0.3);
 }
