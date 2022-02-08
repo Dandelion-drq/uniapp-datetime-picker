@@ -13,5 +13,14 @@ export default {
 </script>
 
 <style>
-/*每个页面公共css */
+/* 每个页面公共css */
+
+/* #ifdef H5 */
+
+/* 隐藏顶部导航栏 */
+uni-page-head {
+  display: none;
+}
+
+/* #endif */
 </style>

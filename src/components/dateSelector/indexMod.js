@@ -83,7 +83,6 @@ export default {
       this.showEndDatePicker = true;
     },
     onChangeStartDate(date) {
-      // console.log('onChangeDate', date);
       this.startDate = date;
     },
     onChangeEndDate(date) {

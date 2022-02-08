@@ -1,16 +1,16 @@
 <template>
   <view class="datetime-picker">
-    <PickerView :columns="dateConfig" :selectVals="selectVals" @onChange="onChangePickerValue" />
+    <CustomPickerView :columns="dateConfig" :selectVals="selectVals" @onChange="onChangePickerValue" />
   </view>
 </template>
 
 <script>
-import PickerView from '../pickerView/index.vue';
+import CustomPickerView from '../customPickerView/index.vue';
 import DateUtil from '../dateTimePicker/dateUtil';
 
 export default {
   components: {
-    PickerView
+    CustomPickerView
   },
   props: {
     // 日期模式，1：年月日，2：年月，3：年份，4：年月日时分秒
@@ -30,7 +30,7 @@ export default {
     },
     // 默认选中日期（注意要跟日期模式对应）
     defaultDate: {
-      type: [String, Number], // 年份模式下可能传数字（比如2022），其他情况下都是
+      type: String,
       default: ''
     }
   },
@@ -45,48 +45,56 @@ export default {
     };
   },
   watch: {
-    defaultDate(val) {
-      // console.log('defaultDate', val);
-      if (val) {
-        let date = new Date(val);
-        if (this.mode == 2) {
-          this.selectYear = date.getFullYear();
-          this.selectMonth = date.getMonth() + 1;
-        } else if (this.mode == 3) {
-          this.selectYear = date.getFullYear();
-        } else if (this.mode == 4) {
-          this.selectYear = date.getFullYear();
-          this.selectMonth = date.getMonth() + 1;
-          this.selectDay = date.getDate();
-          this.selectHour = date.getHours();
-          this.selectMinute = date.getMinutes();
-          this.selectSecond = date.getSeconds();
-        } else {
-          this.selectYear = date.getFullYear();
-          this.selectMonth = date.getMonth() + 1;
-          this.selectDay = date.getDate();
+    defaultDate: {
+      handler(val, oldVal) {
+        // console.log('datetimePicker defaultDate', val, oldVal);
+
+        if (val) {
+          let date = new Date(DateUtil.handleDateStr(val));
+          if (this.mode == 2) {
+            this.selectYear = date.getFullYear();
+            this.selectMonth = date.getMonth() + 1;
+          } else if (this.mode == 3) {
+            this.selectYear = date.getFullYear();
+          } else if (this.mode == 4) {
+            this.selectYear = date.getFullYear();
+            this.selectMonth = date.getMonth() + 1;
+            this.selectDay = date.getDate();
+            this.selectHour = date.getHours();
+            this.selectMinute = date.getMinutes();
+            this.selectSecond = date.getSeconds();
+          } else {
+            this.selectYear = date.getFullYear();
+            this.selectMonth = date.getMonth() + 1;
+            this.selectDay = date.getDate();
+          }
         }
-      }
+      },
+      immediate: true
     }
   },
   computed: {
     minDateObj() {
       let minDate = this.minDate;
-      if (!minDate) {
+      if (minDate) {
+        return new Date(DateUtil.handleDateStr(minDate));
+      } else {
         // 没有传最小日期，默认十年前
         minDate = new Date();
         minDate.setFullYear(minDate.getFullYear() - 10);
+        return minDate;
       }
-      return new Date(minDate);
     },
     maxDateObj() {
       let maxDate = this.maxDate;
-      if (!maxDate) {
-        // 没有传最大日期，默认十年后
+      if (maxDate) {
+        return new Date(DateUtil.handleDateStr(maxDate));
+      } else {
+        // 没有传最小日期，默认十年后
         maxDate = new Date();
         maxDate.setFullYear(maxDate.getFullYear() + 10);
+        return maxDate;
       }
-      return new Date(maxDate);
     },
     years() {
       let years = [];
@@ -278,26 +286,30 @@ export default {
     onChangePickerValue(e) {
       const { value } = e;
       // console.log('onChangePickerValue', value);
-      if (this.mode == 2) {
+
+      if (this.mode == 2 && value[0] && value[1]) {
         // 年月模式
-        this.selectYear = Number((value[0] + '').replace('年', ''));
-        this.selectMonth = Number((value[1] + '').replace('月', ''));
-      } else if (this.mode == 3) {
+        this.selectYear = Number(value[0].replace('年', ''));
+        this.selectMonth = Number(value[1].replace('月', ''));
+      } else if (this.mode == 3 && value[0]) {
         // 只有年份模式
-        this.selectYear = Number((value[0] + '').replace('年', ''));
-      } else if (this.mode == 4) {
+        this.selectYear = Number(value[0].replace('年', ''));
+      } else if (this.mode == 4 && value[0] && value[1] && value[2] != '' && value[3] && value[4] && value[5]) {
         // 年月日时分秒模式
-        this.selectYear = Number((value[0] + '').replace('年', ''));
-        this.selectMonth = Number((value[1] + '').replace('月', ''));
-        this.selectDay = Number((value[2] + '').replace('日', ''));
-        this.selectHour = Number((value[3] + '').replace('时', ''));
-        this.selectMinute = Number((value[4] + '').replace('分', ''));
-        this.selectSecond = Number((value[5] + '').replace('秒', ''));
-      } else {
+        this.selectYear = Number(value[0].replace('年', ''));
+        this.selectMonth = Number(value[1].replace('月', ''));
+        this.selectDay = Number(value[2].replace('日', ''));
+        this.selectHour = Number(value[3].replace('时', ''));
+        this.selectMinute = Number(value[4].replace('分', ''));
+        this.selectSecond = Number(value[5].replace('秒', ''));
+      } else if (value[0] && value[1] && value[2]) {
         // 默认，年月日模式
-        this.selectYear = Number((value[0] + '').replace('年', ''));
-        this.selectMonth = Number((value[1] + '').replace('月', ''));
-        this.selectDay = Number((value[2] + '').replace('日', ''));
+        this.selectYear = Number(value[0].replace('年', ''));
+        this.selectMonth = Number(value[1].replace('月', ''));
+        this.selectDay = Number(value[2].replace('日', ''));
+      } else {
+        // 其他情况可能是pickerView返回的数据有问题，不处理
+        return;
       }
 
       let formatTmpl = 'YYYY-MM-DD';
@@ -312,7 +324,7 @@ export default {
       this.$emit(
         'onChange',
         DateUtil.formatDate(
-          new Date(`${this.selectYear}-${this.selectMonth}-${this.selectDay} ${this.selectHour}:${this.selectMinute}:${this.selectSecond}`),
+          new Date(`${this.selectYear}/${this.selectMonth}/${this.selectDay} ${this.selectHour}:${this.selectMinute}:${this.selectSecond}`),
           formatTmpl
         )
       );
