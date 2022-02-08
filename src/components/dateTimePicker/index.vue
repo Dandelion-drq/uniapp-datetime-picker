@@ -50,7 +50,13 @@ export default {
         // console.log('datetimePicker defaultDate', val, oldVal);
 
         if (val) {
+          if (this.mode == 2 && val.replace(/\-/g, '/').split('/').length == 2) {
+            // 日期模式为年月时有可能传进来的defaultDate是2022-02这样的格式，在ios下new Date会报错，加上日期部分做兼容
+            val += '-01';
+          }
+
           let date = new Date(DateUtil.handleDateStr(val));
+
           if (this.mode == 2) {
             this.selectYear = date.getFullYear();
             this.selectMonth = date.getMonth() + 1;
@@ -77,6 +83,10 @@ export default {
     minDateObj() {
       let minDate = this.minDate;
       if (minDate) {
+        if (this.mode == 2 && minDate.replace(/\-/g, '/').split('/').length == 2) {
+          // 日期模式为年月时有可能传进来的minDate是2022-02这样的格式，在ios下new Date会报错，加上日期部分做兼容
+          minDate += '-01';
+        }
         return new Date(DateUtil.handleDateStr(minDate));
       } else {
         // 没有传最小日期，默认十年前
@@ -88,6 +98,10 @@ export default {
     maxDateObj() {
       let maxDate = this.maxDate;
       if (maxDate) {
+        if (this.mode == 2 && maxDate.replace(/\-/g, '/').split('/').length == 2) {
+          // 日期模式为年月时有可能传进来的maxDate是2022-02这样的格式，在ios下new Date会报错，加上日期部分做兼容
+          maxDate += '-01';
+        }
         return new Date(DateUtil.handleDateStr(maxDate));
       } else {
         // 没有传最小日期，默认十年后
@@ -309,6 +323,7 @@ export default {
         this.selectDay = Number(value[2].replace('日', ''));
       } else {
         // 其他情况可能是pickerView返回的数据有问题，不处理
+        console.log('onChangePickerValue其他情况');
         return;
       }
 
