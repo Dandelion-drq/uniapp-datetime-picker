@@ -25,7 +25,7 @@
 
 ### 使用方式
 
-将 `components` 目录下的组件引入到你的项目，或者去DCLOUD插件市场下载安装。
+将 `components` 目录下的组件引入到你的项目，或者去 [DCLOUD插件市场](https://ext.dcloud.net.cn/plugin?id=7381) 下载安装。
 
 ### 代码演示
 
