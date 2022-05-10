@@ -83,8 +83,8 @@ export default {
         return new Date(DateUtil.handleDateStr(minDate));
       } else {
         // 没有传最小日期，默认十年前
-        minDate = new Date();
-        minDate.setFullYear(minDate.getFullYear() - 10);
+        let year = new Date().getFullYear() - 10;
+        minDate = new Date(year, 0, 1);
         return minDate;
       }
     },
@@ -97,9 +97,9 @@ export default {
         }
         return new Date(DateUtil.handleDateStr(maxDate));
       } else {
-        // 没有传最小日期，默认十年后
-        maxDate = new Date();
-        maxDate.setFullYear(maxDate.getFullYear() + 10);
+        // 没有传最大日期，默认十年后
+        let year = new Date().getFullYear() + 10;
+        maxDate = new Date(year, 11, 31);
         return maxDate;
       }
     },
