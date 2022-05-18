@@ -77,11 +77,12 @@ export default {
 | 事件 | 说明 |
 | ---- | ---- |
 | @onChange({startDate, endDate}) | 开始日期或结束日期变更时触发该事件，返回开始日期 `startDate` 和结束日期 `endDate` |
+| @onSubmit({startDate, endDate}) | 点击确定按钮并且当前选择时间范围校验通过时触发该事件，返回开始日期 `startDate` 和结束日期 `endDate` |
 
 ### 代码演示
 
 ```html
-<DateSelector :mode="1" @onChange="onDateSelectorChange" />
+<DateSelector :mode="selectDateType" @onChange="onDateSelectorChange" @onSubmit="onDateSelectorSubmit" />
 ```
 
 ```js
@@ -94,6 +95,9 @@ export default {
   methods: {
     onDateSelectorChange({ startDate, endDate }) {
       console.log('onDateSelectorChange', startDate, endDate);
+    },
+    onDateSelectorSubmit({ startDate, endDate }) {
+      console.log('onDateSelectorSubmit', startDate, endDate);
     }
   }
 }

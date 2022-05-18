@@ -36,6 +36,9 @@ export default {
     },
     onDateSelectorChange({ startDate, endDate }) {
       console.log('onDateSelectorChange', startDate, endDate);
+    },
+    onDateSelectorSubmit({ startDate, endDate }) {
+      console.log('onDateSelectorSubmit', startDate, endDate);
     }
   }
 };

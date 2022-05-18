@@ -20,6 +20,11 @@
       :mode="mode"
     />
     <DateTimePicker v-if="showEndDatePicker" @onChange="onChangeEndDate" :defaultDate="endDate" :minDate="startDate || ''" :mode="mode" />
+
+    <view class="btn-group" v-if="showStartDatePicker || showEndDatePicker">
+      <view class="btn-cancel" @tap="onCancel">取消</view>
+      <view class="btn-confirm" @tap="onConfirm">确定</view>
+    </view>
   </view>
 </template>
 

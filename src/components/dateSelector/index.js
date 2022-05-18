@@ -31,12 +31,8 @@ export default {
   },
   watch: {
     mode() {
-      // 每次筛选模式更换了，把日期都清空
-      this.startDate = '';
-      this.endDate = '';
-      this.activeDate = 'startDate';
-      this.showStartDatePicker = false;
-      this.showEndDatePicker = false;
+      // 筛选模式更换时清空一下数据
+      this.resetData();
     },
     startDate() {
       this.$emit('onChange', {
@@ -90,16 +86,45 @@ export default {
     },
     validDate() {
       if (!this.startDate) {
-        this.showToastInfo('请选择开始时间');
+        uni.showToast({
+          title: '请选择开始时间',
+          icon: 'none'
+        });
         return false;
       } else if (!this.endDate) {
-        this.showToastInfo('请选择结束时间');
+        uni.showToast({
+          title: '请选择结束时间',
+          icon: 'none'
+        });
         return false;
       } else if (DateUtil.isAfter(this.startDate, this.endDate)) {
-        this.showToastInfo('结束时间不能小于开始时间');
+        uni.showToast({
+          title: '结束时间不能小于开始时间',
+          icon: 'none'
+        });
         return false;
       }
       return true;
+    },
+    onCancel() {
+      this.resetData();
+    },
+    onConfirm() {
+      if (this.validDate()) {
+        this.$emit('onSubmit', {
+          startDate: this.startDate,
+          endDate: this.endDate
+        });
+        this.showStartDatePicker = false;
+        this.showEndDatePicker = false;
+      }
+    },
+    resetData() {
+      this.startDate = '';
+      this.endDate = '';
+      this.activeDate = 'startDate';
+      this.showStartDatePicker = false;
+      this.showEndDatePicker = false;
     }
   }
 };
