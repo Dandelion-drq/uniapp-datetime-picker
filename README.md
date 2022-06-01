@@ -113,14 +113,14 @@ export default {
 
 - 年月日模式
 
-  ![demo](/docs/imgs/date.png)
+  ![demo](/docs/imgs/date.jpg)
 
 
 - 年月日时分秒模式
 
-  ![demo](/docs/imgs/datetime.png)
+  ![demo](/docs/imgs/datetime.jpg)
 
 
 - 年月模式
 
-  ![demo](/docs/imgs/monthRange.png)
+  ![demo](/docs/imgs/monthRange.jpg)
