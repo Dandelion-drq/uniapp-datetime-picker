@@ -20,11 +20,23 @@ export default {
       type: Number,
       default: 1
     },
+    // 默认开始日期
     defaultStartDate: {
       type: String,
       default: ''
     },
+    // 默认结束日期
     defaultEndDate: {
+      type: String,
+      default: ''
+    },
+    // 可选的最小日期
+    minDate: {
+      type: String,
+      default: ''
+    },
+    // 可选的最大日期
+    maxDate: {
       type: String,
       default: ''
     }
@@ -46,26 +58,40 @@ export default {
         endDate: this.endDate
       });
     },
-    defaultStartDate(val) {
-      this.startDate = val;
+    defaultStartDate: {
+      handler(defaultStartDate) {
+        if (!defaultStartDate) {
+          return;
+        }
+        if (DateUtil.isBefore(defaultStartDate, this.minDate)) {
+          console.warn(`默认开始日期不可小于最小可选日期，已把默认开始日期设为最小可选日期。默认开始日期：${defaultStartDate}，最小可选日期：${this.minDate}`);
+          this.startDate = this.getModeFormatDateString(this.minDate);
+        } else {
+          this.startDate = this.getModeFormatDateString(defaultStartDate);
+        }
+      },
+      immediate: true
     },
-    defaultEndDate(val) {
-      this.endDate = val;
+    defaultEndDate: {
+      handler(defaultEndDate) {
+        if (!defaultEndDate) {
+          return;
+        }
+        if (DateUtil.isAfter(defaultEndDate, this.maxDate)) {
+          console.warn(`默认结束日期不可大于最大可选日期，已把默认结束日期设为最大可选日期。默认结束日期：${defaultEndDate}，最大可选日期：${this.maxDate}`);
+          this.endDate = this.getModeFormatDateString(this.maxDate);
+        } else {
+          this.endDate = this.getModeFormatDateString(defaultEndDate);
+        }
+      },
+      immediate: true
     }
   },
   methods: {
     onTapStartDate() {
       this.showEndDatePicker = false;
       if (!this.startDate) {
-        if (this.mode == 2) {
-          this.startDate = DateUtil.formatDate(new Date(), 'YYYY-MM');
-        } else if (this.mode == 3) {
-          this.startDate = DateUtil.formatDate(new Date(), 'YYYY');
-        } else if (this.mode == 4) {
-          this.startDate = DateUtil.formatDate(new Date(), 'YYYY-MM-DD HH:mm:ss');
-        } else {
-          this.startDate = DateUtil.formatDate(new Date(), 'YYYY-MM-DD');
-        }
+        this.startDate = this.getModeFormatDateString(new Date());
       }
       this.activeDate = 'startDate';
       this.showStartDatePicker = true;
@@ -125,6 +151,20 @@ export default {
       this.activeDate = 'startDate';
       this.showStartDatePicker = false;
       this.showEndDatePicker = false;
+    },
+    // 返回对应日期模式的时间字符串
+    getModeFormatDateString(date) {
+      let ret = '';
+      if (this.mode == 2) {
+        ret = DateUtil.formatDate(date, 'YYYY-MM');
+      } else if (this.mode == 3) {
+        ret = DateUtil.formatDate(date, 'YYYY');
+      } else if (this.mode == 4) {
+        ret = DateUtil.formatDate(date, 'YYYY-MM-DD HH:mm:ss');
+      } else {
+        ret = DateUtil.formatDate(date, 'YYYY-MM-DD');
+      }
+      return ret;
     }
   }
 };

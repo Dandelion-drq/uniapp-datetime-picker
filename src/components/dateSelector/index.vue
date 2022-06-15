@@ -16,10 +16,18 @@
       v-if="showStartDatePicker"
       @onChange="onChangeStartDate"
       :defaultDate="startDate"
+      :minDate="minDate || ''"
       :maxDate="endDate || ''"
       :mode="mode"
     />
-    <DateTimePicker v-if="showEndDatePicker" @onChange="onChangeEndDate" :defaultDate="endDate" :minDate="startDate || ''" :mode="mode" />
+    <DateTimePicker
+      v-if="showEndDatePicker"
+      @onChange="onChangeEndDate"
+      :defaultDate="endDate"
+      :minDate="startDate || ''"
+      :maxDate="maxDate || ''"
+      :mode="mode"
+    />
 
     <view class="btn-group" v-if="showStartDatePicker || showEndDatePicker">
       <view class="btn-cancel" @tap="onCancel">取消</view>

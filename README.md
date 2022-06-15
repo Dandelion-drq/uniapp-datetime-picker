@@ -71,6 +71,8 @@ export default {
 | mode | Number | 1 | 日期模式，1：年月日，2：年月，3：年份，4：年月日时分秒 |
 | defaultStartDate | String | '' | 默认开始日期 |
 | defaultEndDate | String | '' | 默认结束日期 |
+| minDate | String | '' | 可选的最小日期 |
+| maxDate | String | '' | 可选的最大日期 |
 
 ### 事件
 
@@ -82,7 +84,15 @@ export default {
 ### 代码演示
 
 ```html
-<DateSelector :mode="selectDateType" @onChange="onDateSelectorChange" @onSubmit="onDateSelectorSubmit" />
+<DateSelector
+  :mode="selectDateType"
+  @onChange="onDateSelectorChange"
+  @onSubmit="onDateSelectorSubmit"
+  minDate="2020-2-3"
+  maxDate="2025-10-11"
+  defaultStartDate="2021-1-10"
+  defaultEndDate="2022-10-30"
+/>
 ```
 
 ```js
