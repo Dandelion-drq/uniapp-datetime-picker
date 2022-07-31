@@ -17,14 +17,14 @@
       @onChange="onChangeStartDate"
       :defaultDate="startDate"
       :minDate="minDate || ''"
-      :maxDate="endDate || ''"
+      :maxDate="endDate || maxDate || ''"
       :mode="mode"
     />
     <DateTimePicker
       v-if="showEndDatePicker"
       @onChange="onChangeEndDate"
       :defaultDate="endDate"
-      :minDate="startDate || ''"
+      :minDate="startDate || minDate || ''"
       :maxDate="maxDate || ''"
       :mode="mode"
     />
