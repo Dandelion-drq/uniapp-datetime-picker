@@ -1,5 +1,6 @@
 import DateTimePicker from '../dateTimePicker/index.vue';
 import DateUtil from '../dateTimePicker/dateUtil';
+import { DATE_TYPES } from '../dateTimePicker/constant';
 
 export default {
   components: {
@@ -15,10 +16,10 @@ export default {
     };
   },
   props: {
-    // 日期筛选模式，1：年月日，2：年月，3：年，4：年月日时分秒，5：时分秒，6：时分
+    // 日期筛选模式，1：年月日（默认），2：年月，3：年，4：年月日时分秒，5：时分秒，6：时分
     mode: {
       type: Number,
-      default: 1
+      default: DATE_TYPES.YMD
     },
     // 默认开始日期
     defaultStartDate: {
@@ -160,19 +161,19 @@ export default {
     getModeFormatDateString(date) {
       let fmt = 'YYYY-MM-DD';
       switch (this.mode) {
-        case 2:
+        case DATE_TYPES.YM:
           fmt = 'YYYY-MM';
           break;
-        case 3:
+        case DATE_TYPES.Y:
           fmt = 'YYYY';
           break;
-        case 4:
+        case DATE_TYPES['YMD-HMS']:
           fmt = 'YYYY-MM-DD HH:mm:ss';
           break;
-        case 5:
+        case DATE_TYPES.HMS:
           fmt = 'HH:mm:ss';
           break;
-        case 6:
+        case DATE_TYPES.HM:
           fmt = 'HH:mm';
           break;
         default:

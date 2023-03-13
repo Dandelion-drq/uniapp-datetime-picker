@@ -20,7 +20,6 @@ export default {
       // 多维数组，深度监听
       cache: false,
       get() {
-        // console.log('indexArr', this.selectVals, this.columns);
         if (this.selectVals.length > 0) {
           return this.columns.map((col, cIdx) => {
             return col.findIndex((i) => i == this.selectVals[cIdx]);
