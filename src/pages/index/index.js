@@ -17,6 +17,14 @@ const DATE_TYPES = [
   {
     label: '年月日时分秒',
     value: 4
+  },
+  {
+    label: '时分秒',
+    value: 5
+  },
+  {
+    label: '时分',
+    value: 6
   }
 ];
 

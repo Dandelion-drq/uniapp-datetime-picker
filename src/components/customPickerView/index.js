@@ -20,7 +20,6 @@ export default {
       // 多维数组，深度监听
       cache: false,
       get() {
-        // console.log('indexArr', this.selectVals, this.columns);
         if (this.selectVals.length > 0) {
           return this.columns.map((col, cIdx) => {
             return col.findIndex((i) => i == this.selectVals[cIdx]);
@@ -34,7 +33,6 @@ export default {
   methods: {
     onChange(e) {
       const { value } = e.detail;
-      // console.log('pickerview改变', value, this.columns);
 
       let ret = this.columns.map((item, index) => {
         let idx = value[index];
@@ -46,7 +44,6 @@ export default {
         }
         return item[idx];
       });
-      // console.log('选中值', ret);
 
       this.$emit('onChange', {
         value: ret

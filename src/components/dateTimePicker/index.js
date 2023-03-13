@@ -1,15 +1,16 @@
 import CustomPickerView from '../customPickerView/index.vue';
 import DateUtil from '../dateTimePicker/dateUtil';
+import { DATE_TYPES } from './constant';
 
 export default {
   components: {
     CustomPickerView
   },
   props: {
-    // 日期模式，1：年月日，2：年月，3：年份，4：年月日时分秒
+    // 日期模式，1：年月日（默认），2：年月，3：年份，4：年月日时分秒，5：时分秒，6：时分
     mode: {
       type: Number,
-      default: 1
+      default: DATE_TYPES.YMD
     },
     // 可选的最小日期，默认十年前
     minDate: {
@@ -39,46 +40,40 @@ export default {
   },
   watch: {
     defaultDate: {
+      immediate: true,
       handler(val, oldVal) {
-        // console.log('datetimePicker defaultDate', val, oldVal);
-
         if (val) {
-          if (this.mode == 2 && val.replace(/\-/g, '/').split('/').length == 2) {
+          if (this.mode == DATE_TYPES.YM && val.replace(/\-/g, '/').split('/').length == 2) {
             // 日期模式为年月时有可能传进来的defaultDate是2022-02这样的格式，在ios下new Date会报错，加上日期部分做兼容
             val += '-01';
+          } else if (this.mode == DATE_TYPES.HMS || this.mode == DATE_TYPES.HM) {
+            // 只有时分秒或者只有时分是不能调用new Date生成Date对象的，先加上一个假设的年月日（就取当年一月一日）来兼容
+            const now = new Date();
+            val = `${now.getFullYear()}-01-01 ${val}`;
           }
 
           let date = new Date(DateUtil.handleDateStr(val));
-
-          if (this.mode == 2) {
-            this.selectYear = date.getFullYear();
-            this.selectMonth = date.getMonth() + 1;
-          } else if (this.mode == 3) {
-            this.selectYear = date.getFullYear();
-          } else if (this.mode == 4) {
-            this.selectYear = date.getFullYear();
-            this.selectMonth = date.getMonth() + 1;
-            this.selectDay = date.getDate();
-            this.selectHour = date.getHours();
-            this.selectMinute = date.getMinutes();
-            this.selectSecond = date.getSeconds();
-          } else {
-            this.selectYear = date.getFullYear();
-            this.selectMonth = date.getMonth() + 1;
-            this.selectDay = date.getDate();
-          }
+          this.selectYear = date.getFullYear();
+          this.selectMonth = date.getMonth() + 1;
+          this.selectDay = date.getDate();
+          this.selectHour = date.getHours();
+          this.selectMinute = date.getMinutes();
+          this.selectSecond = date.getSeconds();
         }
-      },
-      immediate: true
+      }
     }
   },
   computed: {
     minDateObj() {
       let minDate = this.minDate;
       if (minDate) {
-        if (this.mode == 2 && minDate.replace(/\-/g, '/').split('/').length == 2) {
+        if (this.mode == DATE_TYPES.YM && minDate.replace(/\-/g, '/').split('/').length == 2) {
           // 日期模式为年月时有可能传进来的minDate是2022-02这样的格式，在ios下new Date会报错，加上日期部分做兼容
           minDate += '-01';
+        } else if (this.mode == DATE_TYPES.HMS || this.mode == DATE_TYPES.HM) {
+          // 只有时分秒或者只有时分是不能调用new Date生成Date对象的，先加上一个假设的年月日（就取当年一月一日）来兼容
+          const now = new Date();
+          minDate = `${now.getFullYear()}-01-01 ${minDate}`;
         }
         return new Date(DateUtil.handleDateStr(minDate));
       } else {
@@ -91,9 +86,13 @@ export default {
     maxDateObj() {
       let maxDate = this.maxDate;
       if (maxDate) {
-        if (this.mode == 2 && maxDate.replace(/\-/g, '/').split('/').length == 2) {
+        if (this.mode == DATE_TYPES.YM && maxDate.replace(/\-/g, '/').split('/').length == 2) {
           // 日期模式为年月时有可能传进来的maxDate是2022-02这样的格式，在ios下new Date会报错，加上日期部分做兼容
           maxDate += '-01';
+        } else if (this.mode == DATE_TYPES.HMS || this.mode == DATE_TYPES.HM) {
+          // 只有时分秒或者只有时分是不能调用new Date生成Date对象的，先加上一个假设的年月日（就取当年一月一日）来兼容
+          const now = new Date();
+          maxDate = `${now.getFullYear()}-01-01 ${maxDate}`;
         }
         return new Date(DateUtil.handleDateStr(maxDate));
       } else {
@@ -244,64 +243,81 @@ export default {
     },
     // 传给pickerView组件的数组，根据mode来生成不同的数据
     dateConfig() {
-      if (this.mode == 2) {
-        // 年月模式
-        let years = this.years.map((y) => y + '年');
-        let months = this.months.map((m) => m + '月');
-        return [years, months];
-      } else if (this.mode == 3) {
-        // 只有年份模式
-        let years = this.years.map((y) => y + '年');
-        return [years];
-      } else if (this.mode == 4) {
-        // 年月日时分秒模式
-        let years = this.years.map((y) => y + '年');
-        let months = this.months.map((m) => m + '月');
-        let days = this.days.map((d) => d + '日');
-        let hours = this.hours.map((h) => h + '时');
-        let minutes = this.minutes.map((m) => m + '分');
-        let seconds = this.seconds.map((s) => s + '秒');
-        return [years, months, days, hours, minutes, seconds];
-      } else {
-        // 默认，年月日模式
-        let years = this.years.map((y) => y + '年');
-        let months = this.months.map((m) => m + '月');
-        let days = this.days.map((d) => d + '日');
-        return [years, months, days];
+      let years = this.years.map((y) => y + '年');
+      let months = this.months.map((m) => m + '月');
+      let days = this.days.map((d) => d + '日');
+      let hours = this.hours.map((h) => h + '时');
+      let minutes = this.minutes.map((m) => m + '分');
+      let seconds = this.seconds.map((s) => s + '秒');
+
+      let ret = [];
+      switch (this.mode) {
+        case DATE_TYPES.YM:
+          ret = [years, months];
+          break;
+        case DATE_TYPES.Y:
+          ret = [years];
+          break;
+        case DATE_TYPES['YMD-HMS']:
+          ret = [years, months, days, hours, minutes, seconds];
+          break;
+        case DATE_TYPES.HMS:
+          ret = [hours, minutes, seconds];
+          break;
+        case DATE_TYPES.HM:
+          ret = [hours, minutes];
+          break;
+        default:
+          ret = [years, months, days];
+          break;
       }
+
+      return ret;
     },
     selectVals() {
-      if (this.mode == 2) {
-        return [this.selectYear + '年', this.selectMonth + '月'];
-      } else if (this.mode == 3) {
-        return [this.selectYear + '年'];
-      } else if (this.mode == 4) {
-        return [
-          this.selectYear + '年',
-          this.selectMonth + '月',
-          this.selectDay + '日',
-          this.selectHour + '时',
-          this.selectMinute + '分',
-          this.selectSecond + '秒'
-        ];
-      } else {
-        return [this.selectYear + '年', this.selectMonth + '月', this.selectDay + '日'];
+      let ret = [];
+      switch (this.mode) {
+        case DATE_TYPES.YM:
+          ret = [this.selectYear + '年', this.selectMonth + '月'];
+          break;
+        case DATE_TYPES.Y:
+          ret = [this.selectYear + '年'];
+          break;
+        case DATE_TYPES['YMD-HMS']:
+          ret = [
+            this.selectYear + '年',
+            this.selectMonth + '月',
+            this.selectDay + '日',
+            this.selectHour + '时',
+            this.selectMinute + '分',
+            this.selectSecond + '秒'
+          ];
+          break;
+        case DATE_TYPES.HMS:
+          ret = [this.selectHour + '时', this.selectMinute + '分', this.selectSecond + '秒'];
+          break;
+        case DATE_TYPES.HM:
+          ret = [this.selectHour + '时', this.selectMinute + '分'];
+          break;
+        default:
+          ret = [this.selectYear + '年', this.selectMonth + '月', this.selectDay + '日'];
+          break;
       }
+      return ret;
     }
   },
   methods: {
     onChangePickerValue(e) {
       const { value } = e;
-      // console.log('onChangePickerValue', value);
 
-      if (this.mode == 2 && value[0] && value[1]) {
+      if (this.mode == DATE_TYPES.YM && value[0] && value[1]) {
         // 年月模式
         this.selectYear = Number(value[0].replace('年', ''));
         this.selectMonth = Number(value[1].replace('月', ''));
-      } else if (this.mode == 3 && value[0]) {
+      } else if (this.mode == DATE_TYPES.Y && value[0]) {
         // 只有年份模式
         this.selectYear = Number(value[0].replace('年', ''));
-      } else if (this.mode == 4 && value[0] && value[1] && value[2] != '' && value[3] && value[4] && value[5]) {
+      } else if (this.mode == DATE_TYPES['YMD-HMS'] && value[0] && value[1] && value[2] != '' && value[3] && value[4] && value[5]) {
         // 年月日时分秒模式
         this.selectYear = Number(value[0].replace('年', ''));
         this.selectMonth = Number(value[1].replace('月', ''));
@@ -309,6 +325,15 @@ export default {
         this.selectHour = Number(value[3].replace('时', ''));
         this.selectMinute = Number(value[4].replace('分', ''));
         this.selectSecond = Number(value[5].replace('秒', ''));
+      } else if (this.mode == DATE_TYPES.HMS && value[0] && value[1] && value[2]) {
+        // 时分秒模式
+        this.selectHour = Number(value[0].replace('时', ''));
+        this.selectMinute = Number(value[1].replace('分', ''));
+        this.selectSecond = Number(value[2].replace('秒', ''));
+      } else if (this.mode == DATE_TYPES.HM && value[0] && value[1]) {
+        // 时分模式
+        this.selectHour = Number(value[0].replace('时', ''));
+        this.selectMinute = Number(value[1].replace('分', ''));
       } else if (value[0] && value[1] && value[2]) {
         // 默认，年月日模式
         this.selectYear = Number(value[0].replace('年', ''));
@@ -321,12 +346,24 @@ export default {
       }
 
       let formatTmpl = 'YYYY-MM-DD';
-      if (this.mode == 2) {
-        formatTmpl = 'YYYY-MM';
-      } else if (this.mode == 3) {
-        formatTmpl = 'YYYY';
-      } else if (this.mode == 4) {
-        formatTmpl = 'YYYY-MM-DD HH:mm:ss';
+      switch (this.mode) {
+        case DATE_TYPES.YM:
+          formatTmpl = 'YYYY-MM';
+          break;
+        case DATE_TYPES.Y:
+          formatTmpl = 'YYYY';
+          break;
+        case DATE_TYPES['YMD-HMS']:
+          formatTmpl = 'YYYY-MM-DD HH:mm:ss';
+          break;
+        case DATE_TYPES.HMS:
+          formatTmpl = 'HH:mm:ss';
+          break;
+        case DATE_TYPES.HM:
+          formatTmpl = 'HH:mm';
+          break;
+        default:
+          break;
       }
 
       this.$emit(
