@@ -69,7 +69,7 @@ export default {
       if (minDate) {
         if (this.mode == DATE_TYPES.YM && minDate.replace(/\-/g, '/').split('/').length == 2) {
           // 日期模式为年月时有可能传进来的minDate是2022-02这样的格式，在ios下new Date会报错，加上日期部分做兼容
-          val += '-01';
+          minDate += '-01';
         } else if (this.mode == DATE_TYPES.HMS || this.mode == DATE_TYPES.HM) {
           // 只有时分秒或者只有时分是不能调用new Date生成Date对象的，先加上一个假设的年月日（就取当年一月一日）来兼容
           const now = new Date();
@@ -88,7 +88,7 @@ export default {
       if (maxDate) {
         if (this.mode == DATE_TYPES.YM && maxDate.replace(/\-/g, '/').split('/').length == 2) {
           // 日期模式为年月时有可能传进来的maxDate是2022-02这样的格式，在ios下new Date会报错，加上日期部分做兼容
-          val += '-01';
+          maxDate += '-01';
         } else if (this.mode == DATE_TYPES.HMS || this.mode == DATE_TYPES.HM) {
           // 只有时分秒或者只有时分是不能调用new Date生成Date对象的，先加上一个假设的年月日（就取当年一月一日）来兼容
           const now = new Date();
