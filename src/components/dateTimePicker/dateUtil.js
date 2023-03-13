@@ -9,7 +9,7 @@ function formatDate(date, fmt) {
     date = new Date(handleDateStr(date));
   }
 
-  let o = {
+  const o = {
     'M+': date.getMonth() + 1, // 月份
     'd+': date.getDate(), // 日
     'D+': date.getDate(), // 日
@@ -24,7 +24,8 @@ function formatDate(date, fmt) {
   if (/([y|Y]+)/.test(fmt)) {
     fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').slice(4 - RegExp.$1.length));
   }
-  for (let k in o) {
+
+  for (const k in o) {
     if (new RegExp('(' + k + ')').test(fmt)) {
       fmt = fmt.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ('00' + o[k]).slice(('' + o[k]).length));
     }

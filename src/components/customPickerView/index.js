@@ -34,7 +34,6 @@ export default {
   methods: {
     onChange(e) {
       const { value } = e.detail;
-      // console.log('pickerview改变', value, this.columns);
 
       let ret = this.columns.map((item, index) => {
         let idx = value[index];
@@ -46,7 +45,6 @@ export default {
         }
         return item[idx];
       });
-      // console.log('选中值', ret);
 
       this.$emit('onChange', {
         value: ret

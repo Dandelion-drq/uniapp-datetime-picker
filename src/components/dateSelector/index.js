@@ -15,7 +15,7 @@ export default {
     };
   },
   props: {
-    // 日期筛选模式，1：年月日，2：年月，3：年，4：年月日时分秒
+    // 日期筛选模式，1：年月日，2：年月，3：年，4：年月日时分秒，5：时分秒，6：时分
     mode: {
       type: Number,
       default: 1
@@ -64,7 +64,9 @@ export default {
           return;
         }
         if (DateUtil.isBefore(defaultStartDate, this.minDate)) {
-          console.warn(`默认开始日期不可小于最小可选日期，已把默认开始日期设为最小可选日期。默认开始日期：${defaultStartDate}，最小可选日期：${this.minDate}`);
+          console.warn(
+            `默认开始日期不可小于最小可选日期，已把默认开始日期设为最小可选日期。默认开始日期：${defaultStartDate}，最小可选日期：${this.minDate}`
+          );
           this.startDate = this.getModeFormatDateString(this.minDate);
         } else {
           this.startDate = this.getModeFormatDateString(defaultStartDate);
@@ -78,7 +80,9 @@ export default {
           return;
         }
         if (DateUtil.isAfter(defaultEndDate, this.maxDate)) {
-          console.warn(`默认结束日期不可大于最大可选日期，已把默认结束日期设为最大可选日期。默认结束日期：${defaultEndDate}，最大可选日期：${this.maxDate}`);
+          console.warn(
+            `默认结束日期不可大于最大可选日期，已把默认结束日期设为最大可选日期。默认结束日期：${defaultEndDate}，最大可选日期：${this.maxDate}`
+          );
           this.endDate = this.getModeFormatDateString(this.maxDate);
         } else {
           this.endDate = this.getModeFormatDateString(defaultEndDate);
@@ -154,17 +158,27 @@ export default {
     },
     // 返回对应日期模式的时间字符串
     getModeFormatDateString(date) {
-      let ret = '';
-      if (this.mode == 2) {
-        ret = DateUtil.formatDate(date, 'YYYY-MM');
-      } else if (this.mode == 3) {
-        ret = DateUtil.formatDate(date, 'YYYY');
-      } else if (this.mode == 4) {
-        ret = DateUtil.formatDate(date, 'YYYY-MM-DD HH:mm:ss');
-      } else {
-        ret = DateUtil.formatDate(date, 'YYYY-MM-DD');
+      let fmt = 'YYYY-MM-DD';
+      switch (this.mode) {
+        case 2:
+          fmt = 'YYYY-MM';
+          break;
+        case 3:
+          fmt = 'YYYY';
+          break;
+        case 4:
+          fmt = 'YYYY-MM-DD HH:mm:ss';
+          break;
+        case 5:
+          fmt = 'HH:mm:ss';
+          break;
+        case 6:
+          fmt = 'HH:mm';
+          break;
+        default:
+          break;
       }
-      return ret;
+      return DateUtil.formatDate(date, fmt);
     }
   }
 };
