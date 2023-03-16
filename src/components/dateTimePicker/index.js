@@ -41,7 +41,7 @@ export default {
   watch: {
     defaultDate: {
       immediate: true,
-      handler(val, oldVal) {
+      handler(val) {
         if (val) {
           if (this.mode == DATE_TYPES.YM && val.replace(/\-/g, '/').split('/').length == 2) {
             // 日期模式为年月时有可能传进来的defaultDate是2022-02这样的格式，在ios下new Date会报错，加上日期部分做兼容

@@ -64,6 +64,12 @@ export default {
         if (!defaultStartDate) {
           return;
         }
+
+        if (this.mode == DATE_TYPES.HMS || this.mode == DATE_TYPES.HM) {
+          console.error('时分秒/时分模式不支持设置默认开始时间');
+          return;
+        }
+
         if (DateUtil.isBefore(defaultStartDate, this.minDate)) {
           console.warn(
             `默认开始日期不可小于最小可选日期，已把默认开始日期设为最小可选日期。默认开始日期：${defaultStartDate}，最小可选日期：${this.minDate}`
@@ -80,6 +86,12 @@ export default {
         if (!defaultEndDate) {
           return;
         }
+
+        if (this.mode == DATE_TYPES.HMS || this.mode == DATE_TYPES.HM) {
+          console.error('时分秒/时分模式不支持设置默认结束时间');
+          return;
+        }
+
         if (DateUtil.isAfter(defaultEndDate, this.maxDate)) {
           console.warn(
             `默认结束日期不可大于最大可选日期，已把默认结束日期设为最大可选日期。默认结束日期：${defaultEndDate}，最大可选日期：${this.maxDate}`
@@ -90,6 +102,18 @@ export default {
         }
       },
       immediate: true
+    },
+    minDate(val) {
+      if ((val && this.mode == DATE_TYPES.HMS) || this.mode == DATE_TYPES.HM) {
+        console.error('时分秒/时分模式不支持设置最小可选时间');
+        return;
+      }
+    },
+    maxDate(val) {
+      if ((val && this.mode == DATE_TYPES.HMS) || this.mode == DATE_TYPES.HM) {
+        console.error('时分秒/时分模式不支持设置最大可选时间');
+        return;
+      }
     }
   },
   methods: {
@@ -115,7 +139,7 @@ export default {
     onChangeEndDate(date) {
       this.endDate = date;
     },
-    validDate() {
+    validateInput() {
       if (!this.startDate) {
         uni.showToast({
           title: '请选择开始时间',
@@ -141,7 +165,7 @@ export default {
       this.resetData();
     },
     onConfirm() {
-      if (this.validDate()) {
+      if (this.validateInput()) {
         this.$emit('onSubmit', {
           startDate: this.startDate,
           endDate: this.endDate

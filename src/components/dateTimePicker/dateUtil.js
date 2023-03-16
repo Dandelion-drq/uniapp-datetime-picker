@@ -75,9 +75,19 @@ function isAfter(date1, date2) {
   return date1.getTime() > date2.getTime();
 }
 
+/**
+ * 检查传入的字符串是否能转换为有效的Date对象
+ * @param {String} date
+ * @returns {Boolean}
+ */
+function isValid(date) {
+  return new Date(date) !== 'Invalid Date' && !isNaN(new Date(date));
+}
+
 export default {
   formatDate,
   handleDateStr,
   isBefore,
-  isAfter
+  isAfter,
+  isValid
 };
