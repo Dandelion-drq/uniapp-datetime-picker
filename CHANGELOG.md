@@ -2,7 +2,7 @@
 
 ## 1.0.6（2023-03-14）
 - feat: 增加支持时分秒和时分模式
-- refactor: 抽取DATE_TYPES全局常量
+- refactor: 抽取 `DATE_TYPES` 全局常量
 
 ## 1.0.5（2022-06-15）
 fix: 修复 `DateSelector` 最小、最大日期范围同时设置无效bug。
